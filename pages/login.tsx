@@ -1,21 +1,25 @@
 import type { NextPage } from "next";
 import { useState } from "react";
+import axios from "axios";
 
 interface Input {
   email: string;
   password: string;
+  error: string;
 }
 
 const Login: NextPage = () => {
   const [input, setInput] = useState<Input>({
     email: "",
     password: "",
+    error: "",
   });
 
   const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput({
       ...input,
       email: e.target.value,
+      error: "",
     });
   };
 
@@ -23,35 +27,70 @@ const Login: NextPage = () => {
     setInput({
       ...input,
       password: e.target.value,
+      error: "",
     });
   };
 
-  const onClickLogin = (e: React.MouseEvent<HTMLButtonElement>): void => {
+  const onClickLogin = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ): Promise<void> => {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
+      setInput({
+        ...input,
+        error: "Please enter a valid email address",
+      });
+      return;
+    }
+
+    if (input.password.length < 4 || input.password.length > 30) {
+      setInput({
+        ...input,
+        error: "password must be between 4 and 30 characters",
+      });
+      return;
+    }
+
+    await axios
+      .get("https://jsonplaceholder.typicode.com/todos/1")
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
     alert(`email: ${input.email}, password: ${input.password}`);
+
     e.preventDefault();
   };
 
   return (
     <div className="flex flex-col md:flex-row h-screen">
-      <section className="flex flex-[5] md:flex-[1] flex-col bg-orange-400 items-center justify-center">
-        <h2>Login</h2>
-        <input
-          value={input.email}
-          onChange={onChangeEmail}
-          type="email"
-          className="rounded-xl m-1"
-        />
-        <input
-          value={input.password}
-          onChange={onChangePassword}
-          type="password"
-          className="rounded-xl m-1"
-        />
-        <button onClick={onClickLogin} className="bg-blue-300 px-12 rounded-md">
-          login
-        </button>
+      <section className="flex flex-[5] md:flex-[1] flex-col items-center justify-center">
+        <div className="flex flex-col">
+          <label className="text-red-600">{input.error}</label>
+          <input
+            value={input.email}
+            onChange={onChangeEmail}
+            type="email"
+            className="my-4 border-b-2 border-slate-200"
+            placeholder="Email"
+          />
+          <input
+            value={input.password}
+            onChange={onChangePassword}
+            type="password"
+            className="my-4 border-b-2 border-slate-200"
+            placeholder="Password"
+          />
+          <div>
+            <button onClick={onClickLogin} className="font-bold my-2">
+              Sign in
+            </button>
+          </div>
+        </div>
       </section>
-      <aside className="bg-red-400 flex-[1] md:flex-[2]"></aside>
+      <aside className="bg-orange-100 flex-[1] md:flex-[2]"></aside>
     </div>
   );
 };
