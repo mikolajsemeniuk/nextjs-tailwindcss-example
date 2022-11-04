@@ -50,8 +50,19 @@ const Login: NextPage = () => {
       return;
     }
 
-    await axios
-      .get("https://jsonplaceholder.typicode.com/todos/1")
+    await axios({
+      method: "post",
+      url: "http://localhost:5000/account/login",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      data: {
+        email: input.email,
+        password: input.password,
+      },
+      withCredentials: true,
+    })
       .then((response) => {
         console.log(response.data);
       })
