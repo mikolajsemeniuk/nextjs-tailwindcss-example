@@ -4,17 +4,27 @@ import axios from "axios";
 import { useRouter } from "next/router";
 
 interface Input {
+  company: string;
   email: string;
   password: string;
 }
 
-const Login: NextPage = () => {
+const Register: NextPage = () => {
   const router = useRouter();
   const [input, setInput] = useState<Input>({
+    company: "",
     email: "",
     password: "",
   });
   const [error, setError] = useState<string>("");
+
+  const onChangeCompany = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setInput({
+      ...input,
+      company: e.target.value,
+    });
+    setError("");
+  };
 
   const onChangeEmail = (e: React.ChangeEvent<HTMLInputElement>): void => {
     setInput({
@@ -35,6 +45,11 @@ const Login: NextPage = () => {
   const onClickLogin = async (
     e: React.MouseEvent<HTMLButtonElement>
   ): Promise<void> => {
+    if (input.company.length < 2 || input.company.length > 30) {
+      setError("Company must be between 2 and 30 characters");
+      return;
+    }
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input.email)) {
       setError("Please enter a valid email address");
       return;
@@ -47,12 +62,13 @@ const Login: NextPage = () => {
 
     await axios({
       method: "post",
-      url: "http://localhost:5000/account/login",
+      url: "http://localhost:5000/account/register",
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
       data: {
+        company: input.company,
         email: input.email,
         password: input.password,
       },
@@ -73,6 +89,13 @@ const Login: NextPage = () => {
       <section className="flex flex-[5] md:flex-[1] flex-col items-center justify-center">
         <div className="flex flex-col">
           <label className="text-red-600">{error}</label>
+          <input
+            value={input.company}
+            onChange={onChangeCompany}
+            type="text"
+            className="my-4 border-b-2 border-slate-200"
+            placeholder="Company"
+          />
           <input
             value={input.email}
             onChange={onChangeEmail}
@@ -99,4 +122,4 @@ const Login: NextPage = () => {
   );
 };
 
-export default Login;
+export default Register;
