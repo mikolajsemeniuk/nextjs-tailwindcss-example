@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { useRouter } from "next/router";
 
 interface Campaign {
   key: string;
@@ -23,6 +24,7 @@ interface Campaign {
 
 const Home: NextPage = () => {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const router = useRouter();
 
   useEffect(() => {
     axios({
@@ -44,6 +46,12 @@ const Home: NextPage = () => {
   return (
     <>
       <div className="text-3xl m-3">Current campaigns</div>
+      <button
+        onClick={() => router.push("/campaigns/create")}
+        className="mx-4 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+      >
+        Create campaign
+      </button>
       <section className="min-h-screen body-font text-gray-600 ">
         <div className="container mx-auto px-5 py-10">
           {campaigns.map((campaign) => (
