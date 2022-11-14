@@ -38,7 +38,7 @@ const CreatePage: NextPage = () => {
     languages: "",
   });
 
-  const create = (event: React.MouseEvent<HTMLButtonElement>): void => {
+  const create = (_: React.MouseEvent<HTMLButtonElement>): void => {
     axios({
       method: "post",
       url: "http://localhost:5000/campaign/create",
