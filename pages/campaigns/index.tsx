@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { AxiosResponse, AxiosError } from "axios";
 
 interface Campaign {
   key: string;
@@ -35,11 +36,13 @@ const Home: NextPage = () => {
       },
       withCredentials: true,
     })
-      .then((response) => {
+      .then((response: AxiosResponse) => {
         setCampaigns(response.data);
       })
-      .catch((err) => {
-        console.log(err);
+      .catch((err: AxiosError) => {
+        if (err.response?.status === 401) {
+          router.push("/unauthorized");
+        }
       });
   });
 
