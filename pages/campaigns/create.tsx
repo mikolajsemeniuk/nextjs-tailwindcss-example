@@ -38,7 +38,7 @@ const CreatePage: NextPage = () => {
     languages: "",
   });
 
-  const create = (event: React.FormEvent<HTMLFormElement>): void => {
+  const create = (event: React.MouseEvent<HTMLButtonElement>): void => {
     axios({
       method: "post",
       url: "http://localhost:5000/campaign/create",
@@ -50,20 +50,19 @@ const CreatePage: NextPage = () => {
       },
       withCredentials: true,
     })
-      .then((response: AxiosResponse) => {
+      .then((_: AxiosResponse) => {
         router.push("/campaigns");
       })
       .catch((err: AxiosError) => {
         console.error(err);
       });
-    event.preventDefault();
   };
 
   return (
     <>
       <div className="max-w-2xl mx-auto bg-white p-16">
         <h1 className="text-3xl mb-12">Create campaign</h1>
-        <form onSubmit={create}>
+        <form>
           <div className="mb-6">
             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300">
               Name
@@ -284,7 +283,7 @@ const CreatePage: NextPage = () => {
             />
           </div>
           <button
-            type="submit"
+            onClick={create}
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Submit
