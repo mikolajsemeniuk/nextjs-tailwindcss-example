@@ -48,7 +48,20 @@ const Home: NextPage = () => {
   });
 
   const remove = () => {
-    alert(key);
+    axios({
+      method: "delete",
+      url: "http://localhost:5000/campaign/remove/" + key,
+      headers: {
+        accept: "application/json",
+      },
+      withCredentials: true,
+    })
+      .then((response: AxiosResponse) => {
+        setKey("");
+      })
+      .catch((err: AxiosError) => {
+        console.log(err);
+      });
   };
 
   return (
